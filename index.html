@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mehran Fit</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Mehran Fit</h1>
+    <nav>
+      <button onclick="showTab('progressTab')">Progress</button>
+      <button onclick="showTab('injectionsTab')">Injections</button>
+      <button onclick="showTab('profileTab')">Profile</button>
+    </nav>
+  </header>
+
+  <section id="progressTab" class="tab active">
+    <h2>Progress Chart</h2>
+    <canvas id="progressChart" width="320" height="200"></canvas>
+  </section>
+
+  <section id="injectionsTab" class="tab">
+    <h2>Injection Tracker</h2>
+    <form id="injectionForm">
+      <label>Date: <input type="date" id="injDate" required /></label>
+      <label>Weight (kg): <input type="number" id="injWeight" required /></label>
+      <button type="submit">Add</button>
+    </form>
+    <ul id="injectionList"></ul>
+  </section>
+
+  <section id="profileTab" class="tab">
+    <h2>Your Profile</h2>
+    <label>Name: <input type="text" id="nameInput" /></label>
+    <label>Height (cm): <input type="number" id="heightInput" /></label>
+    <label>Starting Weight (kg): <input type="number" id="startWeightInput" /></label>
+    <label>Goal: <input type="number" id="goalInput" /></label>
+    <button onclick="saveProfile()">Save</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

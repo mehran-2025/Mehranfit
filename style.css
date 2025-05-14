@@ -1,0 +1,8 @@
+
+body { font-family: Arial; margin: 0; background: #f4f4f4; }
+header { background: #0c2340; color: white; padding: 10px; text-align: center; }
+nav { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
+nav button { padding: 10px; background: #eee; border: none; cursor: pointer; }
+.tab { display: none; padding: 20px; background: white; margin: 10px; border-radius: 10px; }
+.tab.active { display: block; }
+canvas { background: white; border: 1px solid #ccc; border-radius: 8px; }
