@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const profileDisplay = document.getElementById("profileDisplay");
 
   const weightHistory = JSON.parse(localStorage.getItem("weightHistory") || "[]");
+  const injections = JSON.parse(localStorage.getItem("injections") || "[]");
 
   function updateChart() {
     const ctx = weightChart.getContext("2d");
@@ -72,6 +73,24 @@ document.addEventListener("DOMContentLoaded", function () {
     updateChart();
   }
 
+  function renderInjections() {
+    injList.innerHTML = "";
+    injections.forEach((inj, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${inj.date} – ${inj.weight} kg`;
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "❌";
+      delBtn.style.marginLeft = "10px";
+      delBtn.onclick = () => {
+        injections.splice(index, 1);
+        localStorage.setItem("injections", JSON.stringify(injections));
+        renderInjections();
+      };
+      li.appendChild(delBtn);
+      injList.appendChild(li);
+    });
+  }
+
   weightForm.addEventListener("submit", function (e) {
     e.preventDefault();
     const weight = parseFloat(weightInput.value);
@@ -89,11 +108,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const date = injDate.value;
     const weight = injWeight.value;
     if (date && weight) {
-      const li = document.createElement("li");
-      li.textContent = `${date} – ${weight} kg`;
-      injList.appendChild(li);
+      injections.push({ date, weight });
+      localStorage.setItem("injections", JSON.stringify(injections));
       injDate.value = "";
       injWeight.value = "";
+      renderInjections();
     }
   });
 
@@ -139,4 +158,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   updateDashboard();
+  renderInjections();
 });
