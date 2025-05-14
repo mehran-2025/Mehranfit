@@ -7,15 +7,6 @@ function showTab(id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const heightDefault = 1.84;
-  const weightInput = document.getElementById("weightInput");
-  const weightForm = document.getElementById("weightForm");
-  const lastWeightDisplay = document.getElementById("lastWeight");
-  const bmiDisplay = document.getElementById("bmiDisplay");
-  const weightChart = document.getElementById("weightChart");
-  const startOfWeekWeight = document.getElementById("startOfWeekWeight");
-  const endOfWeekWeight = document.getElementById("endOfWeekWeight");
-  const weightChange = document.getElementById("weightChange");
   const injForm = document.getElementById("injectionForm");
   const injDate = document.getElementById("injDate");
   const injWeight = document.getElementById("injWeight");
@@ -26,52 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const profileForm = document.getElementById("profileForm");
   const profileDisplay = document.getElementById("profileDisplay");
 
-  let weightHistory = JSON.parse(localStorage.getItem("weightHistory") || "[]");
   let injections = JSON.parse(localStorage.getItem("injections") || "[]");
-
-  function updateChart() {
-    const ctx = weightChart.getContext("2d");
-    if (window.chartInstance) window.chartInstance.destroy();
-    window.chartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: weightHistory.map(entry => entry.date),
-        datasets: [{
-          label: 'Weight (kg)',
-          data: weightHistory.map(entry => entry.weight),
-          borderColor: '#202945',
-          backgroundColor: 'rgba(32,41,69,0.2)',
-          tension: 0.2
-        }]
-      },
-      options: { scales: { y: { beginAtZero: false } } }
-    });
-  }
-
-  function updateDashboard() {
-    if (weightHistory.length) {
-      const last = weightHistory[weightHistory.length - 1];
-      lastWeightDisplay.textContent = last.weight;
-      const height = parseFloat(localStorage.getItem("height")) || heightDefault;
-      const bmi = (last.weight / (height * height)).toFixed(1);
-      bmiDisplay.textContent = bmi;
-
-      const today = new Date();
-      const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-      const endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
-
-      const startWeight = weightHistory.find(w => new Date(w.date) >= startOfWeek);
-      const endWeight = [...weightHistory].reverse().find(w => new Date(w.date) <= endOfWeek);
-
-      startOfWeekWeight.textContent = startWeight ? startWeight.weight : "-";
-      endOfWeekWeight.textContent = endWeight ? endWeight.weight : "-";
-      if (startWeight && endWeight) {
-        const delta = (endWeight.weight - startWeight.weight).toFixed(1);
-        weightChange.textContent = `${delta} kg`;
-      }
-    }
-    updateChart();
-  }
 
   function renderInjections() {
     injList.innerHTML = "";
@@ -85,23 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
         injections.splice(index, 1);
         localStorage.setItem("injections", JSON.stringify(injections));
         renderInjections();
+        updateProgressChart();
       };
       li.appendChild(delBtn);
       injList.appendChild(li);
     });
   }
-
-  weightForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const weight = parseFloat(weightInput.value);
-    if (!isNaN(weight)) {
-      const today = new Date().toISOString().split("T")[0];
-      weightHistory.push({ date: today, weight });
-      localStorage.setItem("weightHistory", JSON.stringify(weightHistory));
-      weightInput.value = "";
-      updateDashboard();
-    }
-  });
 
   injForm.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -110,9 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (date && weight) {
       injections.push({ date, weight });
       localStorage.setItem("injections", JSON.stringify(injections));
-      renderInjections();
       injDate.value = "";
       injWeight.value = "";
+      renderInjections();
+      updateProgressChart();
     }
   });
 
@@ -153,10 +89,70 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const savedProfile = JSON.parse(localStorage.getItem("profile") || "null");
-  if (savedProfile) {
-    renderProfile(savedProfile);
+  if (savedProfile) renderProfile(savedProfile);
+
+  function updateProgressChart() {
+    const chartEl = document.getElementById("progressChart");
+    if (!chartEl) return;
+    const ctx = chartEl.getContext("2d");
+
+    if (window.progressChartInstance) window.progressChartInstance.destroy();
+
+    const sorted = [...injections].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const actualDates = sorted.map(e => e.date);
+    const actualWeights = sorted.map(e => parseFloat(e.weight));
+
+    const targetStartDate = sorted.length ? new Date(sorted[0].date) : new Date();
+    const targetEndDate = new Date("2025-10-23");
+    const totalWeeks = Math.round((targetEndDate - targetStartDate) / (1000 * 60 * 60 * 24 * 7));
+
+    const goalWeights = [];
+    const goalDates = [];
+    const startWeight = actualWeights[0] || 128.2;
+    const targetWeight = 84;
+    for (let i = 0; i <= totalWeeks; i += 1) {
+      const d = new Date(targetStartDate);
+      d.setDate(d.getDate() + i * 7);
+      const dw = (startWeight - ((startWeight - targetWeight) * i / totalWeeks)).toFixed(1);
+      goalDates.push(d.toISOString().split("T")[0]);
+      goalWeights.push(dw);
+    }
+
+    window.progressChartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: [...goalDates],
+        datasets: [
+          {
+            label: "Actual Weights",
+            data: sorted.map(e => ({ x: e.date, y: e.weight })),
+            borderColor: "blue",
+            backgroundColor: "blue",
+            tension: 0.3,
+            fill: false,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: "Target Slope",
+            data: goalDates.map((d, i) => ({ x: d, y: goalWeights[i] })),
+            borderColor: "green",
+            borderDash: [6, 4],
+            fill: false,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { type: "time", time: { unit: "week" }, title: { display: true, text: "Date" } },
+          y: { beginAtZero: false, title: { display: true, text: "Weight (kg)" } }
+        }
+      }
+    });
   }
 
-  updateDashboard();
   renderInjections();
+  updateProgressChart();
 });

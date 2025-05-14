@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mehran Fit</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#202945"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="script.js"></script>
@@ -16,27 +15,16 @@
     <h1>Mehran Fit</h1>
   </header>
   <nav>
-    <button class="tablink active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="tablink active" onclick="showTab('progress')">Progress</button>
     <button class="tablink" onclick="showTab('workout')">Workout</button>
     <button class="tablink" onclick="showTab('nutrition')">Nutrition</button>
     <button class="tablink" onclick="showTab('injection')">Injections</button>
     <button class="tablink" onclick="showTab('profile')">Profile</button>
   </nav>
   <main>
-    <section id="dashboard" class="tab active">
-      <h2>Dashboard</h2>
-      <form id="weightForm">
-        <label for="weight">Enter today's weight (kg):</label><br/>
-        <input type="number" id="weightInput" step="0.1" required />
-        <button type="submit">Save</button>
-      </form>
-      <p><strong>Last Recorded Weight:</strong> <span id="lastWeight">-</span></p>
-      <p><strong>BMI:</strong> <span id="bmiDisplay">-</span></p>
-      <canvas id="weightChart" width="300" height="200"></canvas>
-      <h3>Weekly Report</h3>
-      <p><strong>Start of Week:</strong> <span id="startOfWeekWeight">-</span></p>
-      <p><strong>End of Week:</strong> <span id="endOfWeekWeight">-</span></p>
-      <p><strong>Total Change:</strong> <span id="weightChange">-</span></p>
+    <section id="progress" class="tab active">
+      <h2>Progress Chart</h2>
+      <canvas id="progressChart" width="300" height="200"></canvas>
     </section>
 
     <section id="workout" class="tab">
