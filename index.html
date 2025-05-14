@@ -5,22 +5,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mehran Fit</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-  </script>
   <meta name="theme-color" content="#202945"/>
-  <style>
-    body { font-family: sans-serif; padding: 2em; text-align: center; }
-    h1 { color: #202945; }
-  </style>
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <h1>Welcome to Mehran Fit</h1>
-  <p>This is your personal fitness dashboard!</p>
+  <header>
+    <h1>Mehran Fit</h1>
+  </header>
+  <nav>
+    <button class="tablink active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="tablink" onclick="showTab('workout')">Workout</button>
+    <button class="tablink" onclick="showTab('nutrition')">Nutrition</button>
+    <button class="tablink" onclick="showTab('injection')">Injections</button>
+    <button class="tablink" onclick="showTab('profile')">Profile</button>
+  </nav>
+  <main>
+    <section id="dashboard" class="tab active">
+      <h2>Welcome to Mehran Fit</h2>
+      <p>Track your weight, calories, and activities.</p>
+    </section>
+    <section id="workout" class="tab">
+      <h2>Workout Plan</h2>
+      <p>Your weekly exercises go here.</p>
+    </section>
+    <section id="nutrition" class="tab">
+      <h2>Nutrition & Supplements</h2>
+      <p>Meal plans and food suggestions.</p>
+    </section>
+    <section id="injection" class="tab">
+      <h2>Injection Tracker</h2>
+      <p>Log your Mounjaro doses and reminders.</p>
+    </section>
+    <section id="profile" class="tab">
+      <h2>Your Profile</h2>
+      <p>Settings and personal info.</p>
+    </section>
+  </main>
 </body>
 </html>
