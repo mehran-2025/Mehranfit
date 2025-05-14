@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mehran Fit</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <button class="tablink active" onclick="showTab('progress')">Progress</button>
+    <button class="tablink" onclick="showTab('workout')">Workout</button>
+    <button class="tablink" onclick="showTab('nutrition')">Nutrition</button>
+    <button class="tablink" onclick="showTab('injections')">Injections</button>
+    <button class="tablink" onclick="showTab('profile')">Profile</button>
+  </div>
+
+  <div class="tab active" id="progress">
+    <h2>Progress Chart</h2>
+    <canvas id="progressChart" width="320" height="200"></canvas>
+  </div>
+
+  <div class="tab" id="workout">
+    <h2>Workout Plan</h2>
+    <ul>
+      <li><strong>Monday:</strong> Chest Press, Shoulder Press, Lat Pulldown</li>
+      <li><strong>Wednesday:</strong> Leg Press, Squats, Hamstring Curl</li>
+      <li><strong>Friday:</strong> Core (Plank, Crunch), Arm Curls</li>
+    </ul>
+  </div>
+
+  <div class="tab" id="nutrition">
+    <h2>Nutrition & Supplements</h2>
+    <p><strong>Breakfast:</strong> 1 boiled egg, whole wheat bread, unsweetened tea</p>
+    <p><strong>Lunch:</strong> Grilled chicken breast + rice + salad</p>
+    <p><strong>Dinner:</strong> Grilled fish or lentil soup + 1 toast</p>
+    <p><strong>Snacks:</strong> Nuts (small handful), low-fat yogurt</p>
+    <p><strong>Supplements:</strong> Omega-3, Vitamin D3, Milk Thistle</p>
+  </div>
+
+  <div class="tab" id="injections">
+    <h2>Injection Tracker</h2>
+    <form id="injectionForm">
+      <label for="injDate">Date:</label>
+      <input type="date" id="injDate" required />
+      <label for="injWeight">Weight (kg):</label>
+      <input type="number" step="0.1" id="injWeight" required />
+      <button type="submit">Add</button>
+    </form>
+    <ul id="injectionList"></ul>
+  </div>
+
+  <div class="tab" id="profile">
+    <h2>Your Profile</h2>
+    <label>Name: <input id="name" type="text" /></label><br />
+    <label>Height (cm): <input id="height" type="number" /></label><br />
+    <label>Starting Weight (kg): <input id="startingWeight" type="number" /></label><br />
+    <label>Goal: <input id="goal" type="number" /></label><br />
+    <button onclick="saveProfile()">Save</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
