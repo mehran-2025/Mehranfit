@@ -26,8 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const profileForm = document.getElementById("profileForm");
   const profileDisplay = document.getElementById("profileDisplay");
 
-  const weightHistory = JSON.parse(localStorage.getItem("weightHistory") || "[]");
-  const injections = JSON.parse(localStorage.getItem("injections") || "[]");
+  let weightHistory = JSON.parse(localStorage.getItem("weightHistory") || "[]");
+  let injections = JSON.parse(localStorage.getItem("injections") || "[]");
 
   function updateChart() {
     const ctx = weightChart.getContext("2d");
@@ -110,9 +110,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (date && weight) {
       injections.push({ date, weight });
       localStorage.setItem("injections", JSON.stringify(injections));
+      renderInjections();
       injDate.value = "";
       injWeight.value = "";
-      renderInjections();
     }
   });
 
