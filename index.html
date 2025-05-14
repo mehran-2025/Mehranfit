@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#202945"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="script.js"></script>
 </head>
 <body>
@@ -31,6 +32,7 @@
       </form>
       <p><strong>Last Recorded Weight:</strong> <span id="lastWeight">-</span></p>
       <p><strong>BMI:</strong> <span id="bmiDisplay">-</span></p>
+      <canvas id="weightChart" width="300" height="200"></canvas>
     </section>
 
     <section id="workout" class="tab">
@@ -53,12 +55,14 @@
 
     <section id="injection" class="tab">
       <h2>Injection Tracker</h2>
-      <ul>
-        <li>Apr 20 – 128.2 kg</li>
-        <li>Apr 27 – 124.3 kg</li>
-        <li>May 5 – 122.1 kg</li>
-        <li>May 12 – 120.6 kg</li>
-      </ul>
+      <form id="injectionForm">
+        <label for="injDate">Date:</label>
+        <input type="date" id="injDate" required />
+        <label for="injWeight">Weight (kg):</label>
+        <input type="number" id="injWeight" step="0.1" required />
+        <button type="submit">Add</button>
+      </form>
+      <ul id="injectionList"></ul>
     </section>
 
     <section id="profile" class="tab">
