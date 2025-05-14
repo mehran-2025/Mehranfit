@@ -11,13 +11,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const injDate = document.getElementById("injDate");
   const injWeight = document.getElementById("injWeight");
   const injList = document.getElementById("injectionList");
-  const startDateForm = document.getElementById("startDateForm");
-  const startDateInput = document.getElementById("startDate");
-  const nextInjection = document.getElementById("nextInjection");
-  const profileForm = document.getElementById("profileForm");
-  const profileDisplay = document.getElementById("profileDisplay");
+  const chartEl = document.getElementById("progressChart");
 
-  let injections = JSON.parse(localStorage.getItem("injections") || "[]");
+  const defaultInjections = [
+    { date: "2024-04-20", weight: 128.2 },
+    { date: "2024-04-27", weight: 124.3 },
+    { date: "2024-05-12", weight: 122.1 }
+  ];
+
+  let injections = [];
+  try {
+    injections = JSON.parse(localStorage.getItem("injections")) || [];
+    if (injections.length === 0) {
+      injections = defaultInjections;
+      localStorage.setItem("injections", JSON.stringify(injections));
+    }
+  } catch (e) {
+    injections = defaultInjections;
+  }
 
   function renderInjections() {
     injList.innerHTML = "";
@@ -52,50 +63,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  startDateForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const start = new Date(startDateInput.value);
-    localStorage.setItem("injectionStart", start.toISOString());
-    const next = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-    nextInjection.textContent = next.toDateString();
-  });
-
-  const savedStart = localStorage.getItem("injectionStart");
-  if (savedStart) {
-    const start = new Date(savedStart);
-    const next = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-    nextInjection.textContent = next.toDateString();
-  }
-
-  profileForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const profile = {
-      name: document.getElementById("name").value,
-      height: document.getElementById("height").value,
-      startWeight: document.getElementById("startWeight").value,
-      goal: document.getElementById("goal").value
-    };
-    localStorage.setItem("profile", JSON.stringify(profile));
-    renderProfile(profile);
-  });
-
-  function renderProfile(profile) {
-    profileDisplay.innerHTML = `
-      <p><strong>Name:</strong> ${profile.name}</p>
-      <p><strong>Height:</strong> ${profile.height} cm</p>
-      <p><strong>Starting Weight:</strong> ${profile.startWeight} kg</p>
-      <p><strong>Goal:</strong> ${profile.goal}</p>
-    `;
-  }
-
-  const savedProfile = JSON.parse(localStorage.getItem("profile") || "null");
-  if (savedProfile) renderProfile(savedProfile);
-
   function updateProgressChart() {
-    const chartEl = document.getElementById("progressChart");
     if (!chartEl) return;
     const ctx = chartEl.getContext("2d");
-
     if (window.progressChartInstance) window.progressChartInstance.destroy();
 
     const sorted = [...injections].sort((a, b) => new Date(a.date) - new Date(b.date));
