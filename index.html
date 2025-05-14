@@ -23,24 +23,50 @@
   </nav>
   <main>
     <section id="dashboard" class="tab active">
-      <h2>Welcome to Mehran Fit</h2>
-      <p>Track your weight, calories, and activities.</p>
+      <h2>Dashboard</h2>
+      <form id="weightForm">
+        <label for="weight">Enter today's weight (kg):</label><br/>
+        <input type="number" id="weightInput" step="0.1" required />
+        <button type="submit">Save</button>
+      </form>
+      <p><strong>Last Recorded Weight:</strong> <span id="lastWeight">-</span></p>
+      <p><strong>BMI:</strong> <span id="bmiDisplay">-</span></p>
     </section>
+
     <section id="workout" class="tab">
       <h2>Workout Plan</h2>
-      <p>Your weekly exercises go here.</p>
+      <ul>
+        <li>Monday: Chest Press, Shoulder Press, Lat Pulldown</li>
+        <li>Wednesday: Leg Press, Squats, Hamstring Curl</li>
+        <li>Friday: Core (Plank, Crunch), Arm Curls</li>
+      </ul>
     </section>
+
     <section id="nutrition" class="tab">
       <h2>Nutrition & Supplements</h2>
-      <p>Meal plans and food suggestions.</p>
+      <p><strong>Breakfast:</strong> 1 boiled egg, whole wheat bread, unsweetened tea</p>
+      <p><strong>Lunch:</strong> Grilled chicken breast + rice + salad</p>
+      <p><strong>Dinner:</strong> Grilled fish or lentil soup + 1 toast</p>
+      <p><strong>Snacks:</strong> Nuts (small handful), low-fat yogurt</p>
+      <p><strong>Supplements:</strong> Omega-3, Vitamin D3, Milk Thistle</p>
     </section>
+
     <section id="injection" class="tab">
       <h2>Injection Tracker</h2>
-      <p>Log your Mounjaro doses and reminders.</p>
+      <ul>
+        <li>Apr 20 – 128.2 kg</li>
+        <li>Apr 27 – 124.3 kg</li>
+        <li>May 5 – 122.1 kg</li>
+        <li>May 12 – 120.6 kg</li>
+      </ul>
     </section>
+
     <section id="profile" class="tab">
       <h2>Your Profile</h2>
-      <p>Settings and personal info.</p>
+      <p><strong>Name:</strong> Mehran</p>
+      <p><strong>Height:</strong> 184 cm</p>
+      <p><strong>Starting Weight:</strong> 128.2 kg</p>
+      <p><strong>Goal:</strong> Lose fat & build muscle</p>
     </section>
   </main>
 </body>
