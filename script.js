@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const goalWeights = [];
     const goalDates = [];
-    const startWeight = actualWeights[0] || 128.2;
-    const targetWeight = 84;
+    const startWeight = 130;
+    const targetWeight = 80;
     for (let i = 0; i <= totalWeeks; i += 1) {
       const d = new Date(targetStartDate);
       d.setDate(d.getDate() + i * 7);
