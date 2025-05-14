@@ -1,97 +1,113 @@
 
 function showTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tablink').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tablink').forEach(link => link.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   event.target.classList.add('active');
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const injForm = document.getElementById("injectionForm");
-  const injDate = document.getElementById("injDate");
-  const injWeight = document.getElementById("injWeight");
-  const injList = document.getElementById("injectionList");
-  const chartEl = document.getElementById("progressChart");
+  // Profile
+  const profileForm = document.getElementById("profileForm");
+  const name = document.getElementById("name");
+  const height = document.getElementById("height");
+  const startWeight = document.getElementById("startWeight");
+  const goal = document.getElementById("goal");
 
-  const defaultInjections = [
-    { date: "2024-04-20", weight: 128.2 },
-    { date: "2024-04-27", weight: 124.3 },
-    { date: "2024-05-12", weight: 122.1 }
-  ];
-
-  let injections = [];
-  try {
-    injections = JSON.parse(localStorage.getItem("injections")) || [];
-    if (injections.length === 0) {
-      injections = defaultInjections;
-      localStorage.setItem("injections", JSON.stringify(injections));
-    }
-  } catch (e) {
-    injections = defaultInjections;
+  function saveProfile() {
+    const data = {
+      name: name.value,
+      height: height.value,
+      startWeight: startWeight.value,
+      goal: goal.value
+    };
+    localStorage.setItem("profile", JSON.stringify(data));
   }
 
+  function loadProfile() {
+    const saved = JSON.parse(localStorage.getItem("profile"));
+    if (saved) {
+      name.value = saved.name || "";
+      height.value = saved.height || "";
+      startWeight.value = saved.startWeight || "";
+      goal.value = saved.goal || "";
+    }
+  }
+
+  profileForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    saveProfile();
+  });
+
+  loadProfile();
+
+  // Injection Tracker
+  const injectionForm = document.getElementById("injectionForm");
+  const injDate = document.getElementById("injDate");
+  const injWeight = document.getElementById("injWeight");
+  const injectionList = document.getElementById("injectionList");
+
+  let injections = JSON.parse(localStorage.getItem("injections")) || [];
+
   function renderInjections() {
-    injList.innerHTML = "";
+    injectionList.innerHTML = "";
     injections.forEach((inj, index) => {
       const li = document.createElement("li");
-      li.textContent = `${inj.date} – ${inj.weight} kg`;
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "❌";
-      delBtn.style.marginLeft = "10px";
-      delBtn.onclick = () => {
+      li.textContent = `${inj.date} - ${inj.weight} kg`;
+      const del = document.createElement("button");
+      del.textContent = "❌";
+      del.onclick = () => {
         injections.splice(index, 1);
         localStorage.setItem("injections", JSON.stringify(injections));
         renderInjections();
-        updateProgressChart();
+        renderChart();
       };
-      li.appendChild(delBtn);
-      injList.appendChild(li);
+      li.appendChild(del);
+      injectionList.appendChild(li);
     });
   }
 
-  injForm.addEventListener("submit", function (e) {
+  injectionForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    const date = injDate.value;
-    const weight = injWeight.value;
-    if (date && weight) {
-      injections.push({ date, weight });
-      localStorage.setItem("injections", JSON.stringify(injections));
-      injDate.value = "";
-      injWeight.value = "";
-      renderInjections();
-      updateProgressChart();
-    }
+    injections.push({ date: injDate.value, weight: parseFloat(injWeight.value) });
+    localStorage.setItem("injections", JSON.stringify(injections));
+    injDate.value = "";
+    injWeight.value = "";
+    renderInjections();
+    renderChart();
   });
 
-  function updateProgressChart() {
-    if (!chartEl) return;
-    const ctx = chartEl.getContext("2d");
-    if (window.progressChartInstance) window.progressChartInstance.destroy();
+  renderInjections();
 
-    const sorted = [...injections].sort((a, b) => new Date(a.date) - new Date(b.date));
-    const actualDates = sorted.map(e => e.date);
-    const actualWeights = sorted.map(e => parseFloat(e.weight));
+  // Chart
+  function renderChart() {
+    const ctx = document.getElementById("progressChart").getContext("2d");
+    if (window.progressChart) window.progressChart.destroy();
 
-    const targetStartDate = sorted.length ? new Date(sorted[0].date) : new Date();
-    const targetEndDate = new Date("2025-10-23");
-    const totalWeeks = Math.round((targetEndDate - targetStartDate) / (1000 * 60 * 60 * 24 * 7));
+    if (!injections.length) return;
 
-    const goalWeights = [];
-    const goalDates = [];
-    const startWeight = 130;
-    const targetWeight = 80;
-    for (let i = 0; i <= totalWeeks; i += 1) {
-      const d = new Date(targetStartDate);
+    const sorted = injections.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const dates = sorted.map(e => e.date);
+    const weights = sorted.map(e => e.weight);
+
+    const start = 130;
+    const end = 80;
+    const startDate = new Date(sorted[0].date);
+    const endDate = new Date("2025-10-23");
+    const weeks = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24 * 7));
+    const slopeDates = [], slopeWeights = [];
+
+    for (let i = 0; i <= weeks; i++) {
+      const d = new Date(startDate);
       d.setDate(d.getDate() + i * 7);
-      const dw = (startWeight - ((startWeight - targetWeight) * i / totalWeeks)).toFixed(1);
-      goalDates.push(d.toISOString().split("T")[0]);
-      goalWeights.push(dw);
+      slopeDates.push(d.toISOString().split("T")[0]);
+      slopeWeights.push(start - ((start - end) * i / weeks));
     }
 
-    window.progressChartInstance = new Chart(ctx, {
+    window.progressChart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: [...goalDates],
+        labels: slopeDates,
         datasets: [
           {
             label: "Actual Weights",
@@ -99,15 +115,14 @@ document.addEventListener("DOMContentLoaded", function () {
             borderColor: "blue",
             backgroundColor: "blue",
             tension: 0.3,
-            fill: false,
             pointRadius: 4,
             pointHoverRadius: 6
           },
           {
             label: "Target Slope",
-            data: goalDates.map((d, i) => ({ x: d, y: goalWeights[i] })),
+            data: slopeDates.map((d, i) => ({ x: d, y: slopeWeights[i] })),
             borderColor: "green",
-            borderDash: [6, 4],
+            borderDash: [5, 5],
             fill: false,
             pointRadius: 0
           }
@@ -116,13 +131,18 @@ document.addEventListener("DOMContentLoaded", function () {
       options: {
         responsive: true,
         scales: {
-          x: { type: "time", time: { unit: "week" }, title: { display: true, text: "Date" } },
-          y: { beginAtZero: false, title: { display: true, text: "Weight (kg)" } }
+          x: {
+            type: "time",
+            time: { unit: "week" },
+            title: { display: true, text: "Date" }
+          },
+          y: {
+            title: { display: true, text: "Weight (kg)" }
+          }
         }
       }
     });
   }
 
-  renderInjections();
-  updateProgressChart();
+  renderChart();
 });
