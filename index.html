@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mehran Fit</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header><h1>Mehran Fit</h1></header>
+  <nav>
+    <button onclick="showTab('progress')" class="tablink active">Progress</button>
+    <button onclick="showTab('workout')" class="tablink">Workout</button>
+    <button onclick="showTab('nutrition')" class="tablink">Nutrition</button>
+    <button onclick="showTab('injections')" class="tablink">Injections</button>
+    <button onclick="showTab('profile')" class="tablink">Profile</button>
+  </nav>
+
+  <section id="progress" class="tab active">
+    <h2>Progress Chart</h2>
+    <canvas id="progressChart" width="320" height="200"></canvas>
+  </section>
+
+  <section id="workout" class="tab">
+    <h2>Workout Plan</h2>
+    <ul>
+      <li><strong>Monday:</strong> Chest Press, Shoulder Press, Lat Pulldown</li>
+      <li><strong>Wednesday:</strong> Leg Press, Squats, Hamstring Curl</li>
+      <li><strong>Friday:</strong> Core (Plank, Crunch), Arm Curls</li>
+    </ul>
+  </section>
+
+  <section id="nutrition" class="tab">
+    <h2>Nutrition & Supplements</h2>
+    <p><strong>Breakfast:</strong> 1 boiled egg, whole wheat bread, unsweetened tea</p>
+    <p><strong>Lunch:</strong> Grilled chicken breast + rice + salad</p>
+    <p><strong>Dinner:</strong> Grilled fish or lentil soup + 1 toast</p>
+    <p><strong>Snacks:</strong> Nuts (small handful), low-fat yogurt</p>
+    <p><strong>Supplements:</strong> Omega-3, Vitamin D3, Milk Thistle</p>
+  </section>
+
+  <section id="injections" class="tab">
+    <h2>Injection Tracker</h2>
+    <form id="injectionForm">
+      <label>Date: <input type="date" id="injDate" required /></label>
+      <label>Weight (kg): <input type="number" step="0.1" id="injWeight" required /></label>
+      <button type="submit">Add</button>
+    </form>
+    <ul id="injectionList"></ul>
+  </section>
+
+  <section id="profile" class="tab">
+    <h2>Your Profile</h2>
+    <form id="profileForm">
+      <label>Name: <input type="text" id="name" /></label>
+      <label>Height (cm): <input type="number" id="height" /></label>
+      <label>Starting Weight (kg): <input type="number" step="0.1" id="startWeight" /></label>
+      <label>Goal: <input type="number" step="0.1" id="goal" /></label>
+      <button type="submit">Save</button>
+    </form>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
