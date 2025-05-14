@@ -33,6 +33,10 @@
       <p><strong>Last Recorded Weight:</strong> <span id="lastWeight">-</span></p>
       <p><strong>BMI:</strong> <span id="bmiDisplay">-</span></p>
       <canvas id="weightChart" width="300" height="200"></canvas>
+      <h3>Weekly Report</h3>
+      <p><strong>Start of Week:</strong> <span id="startOfWeekWeight">-</span></p>
+      <p><strong>End of Week:</strong> <span id="endOfWeekWeight">-</span></p>
+      <p><strong>Total Change:</strong> <span id="weightChange">-</span></p>
     </section>
 
     <section id="workout" class="tab">
@@ -63,14 +67,29 @@
         <button type="submit">Add</button>
       </form>
       <ul id="injectionList"></ul>
+      <h3>Next Injection Reminder:</h3>
+      <form id="startDateForm">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" required />
+        <button type="submit">Set Start</button>
+      </form>
+      <p><strong>Next Injection:</strong> <span id="nextInjection">-</span></p>
     </section>
 
     <section id="profile" class="tab">
       <h2>Your Profile</h2>
-      <p><strong>Name:</strong> Mehran</p>
-      <p><strong>Height:</strong> 184 cm</p>
-      <p><strong>Starting Weight:</strong> 128.2 kg</p>
-      <p><strong>Goal:</strong> Lose fat & build muscle</p>
+      <form id="profileForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" />
+        <label for="height">Height (cm):</label>
+        <input type="number" id="height" />
+        <label for="startWeight">Starting Weight (kg):</label>
+        <input type="number" id="startWeight" />
+        <label for="goal">Goal:</label>
+        <input type="text" id="goal" />
+        <button type="submit">Save</button>
+      </form>
+      <div id="profileDisplay"></div>
     </section>
   </main>
 </body>
